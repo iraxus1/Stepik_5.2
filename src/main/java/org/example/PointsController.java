@@ -1,6 +1,7 @@
 package org.example;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,34 +12,44 @@ import java.awt.*;
 
 @Controller
 public class PointsController {
-    //get all points from list
+
+    @Autowired
+    private PointsService pointsService;
+
+    //Display all points in the list
     @GetMapping("/")
-    public String viewHomePageWithAllPointsFromTheList(Model model){
-        model.addAttribute("listPoints", PointsService.getPoints());
+    public String index(Model model) {
+        model.addAttribute("points", PointsService.getPoints());
         return "index";
     }
-    //get first n points from list
+
+    //Display of the first n points from the list
     @GetMapping("/:n")
-    public String viewHomePageWithFirstNPointsFromTheList(Model model){
-        model.addAttribute("listPoints", PointsService.getFirstNPoints(5));
+    public String indexN(Model model, int n) {
+        model.addAttribute("points", PointsService.getFirstNPoints(n));
         return "index";
     }
-    //Calculate and display lengths between points
+
+    //Calculate and display lengths between points x and y
     @GetMapping("/distance/:x/:y")
-    public String viewHomePageWithLengthsBetweenPoints(Model model){
-        model.addAttribute("distance", PointsService.getDistanceBetweenPoints(Integer.parseInt(model.getAttribute("x").toString()), Integer.parseInt(model.getAttribute("y").toString())));
+    public String distance(Model model, int x, int y) {
+        model.addAttribute("distance", PointsService.getDistanceBetweenPoints(x, y));
+        return "distance";
+    }
+
+    //Add a point with the coordinates (x, y) (x, y) to the list
+    @PostMapping("/add/:x/:y")
+    public String addPoint(Model model, int x, int y) {
+        PointsService.addPoint(new Point(x, y));
+        model.addAttribute("points", PointsService.getPoints());
         return "index";
     }
-    //Add a point with the coordinates (x, y) to the list
-    @PostMapping("/add")
-    public String addPointToTheList(Model model){
-        PointsService.addPoint(new Point(Integer.parseInt(model.getAttribute("x").toString()), Integer.parseInt(model.getAttribute("y").toString())));
-        return "redirect:/";
-    }
-    //delete point with id from the list
+
+    //delete a point with the id from the list
     @DeleteMapping("/delete/:id")
-    public String deletePointFromTheList(Model model){
-        PointsService.deletePoint(Integer.parseInt(model.getAttribute("id").toString()));
-        return "redirect:/";
+    public String deletePoint(Model model, int id) {
+        PointsService.deletePoint(id);
+        model.addAttribute("points", PointsService.getPoints());
+        return "index";
     }
 }
