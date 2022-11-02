@@ -1,17 +1,39 @@
 package org.example;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.awt.*;
 
+@Entity
 public class Points {
-    private Point[] points;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    private Point point;
 
-    public Points(Point[] points) {
-        this.points = points;
+    public Points() {
     }
 
-    public Point[] getPoints() {
-        return points;
+    public Points(Point point) {
+        this.point = point;
     }
 
-    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
 }
