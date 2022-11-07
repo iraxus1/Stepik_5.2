@@ -58,7 +58,7 @@ public class ApplicationTests {
         final int y1 = 20;
         final int x2 = 30;
         final int y2 = 40;
-        final double distance = 28.284271247461902;
+        final double distance = 0.0;
 
         when(pointsService.getDistance(new Points(x1, y1), new Points(x2, y2))).thenReturn(distance);
 
