@@ -1,4 +1,8 @@
 pipeline {
+     environment {
+          registry = "iraxus/maven-docker-test"
+          DOCKERHUB_CREDENTIALS = credentials('docker-login-pwd')
+      }
     agent {
         docker {
             image 'maven:3.8.6-amazoncorretto-17'
@@ -20,7 +24,15 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building'
-                sh 'mvn build'
+                sh 'mvn package'
+            }
+        }
+        stage("Build & Push Docker image") {
+            steps {
+                sh 'docker image build -t $registry:$BUILD_NUMBER .'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u iraxus --password-stdin'
+                sh 'docker image push $registry:$BUILD_NUMBER'
+                sh "docker image rm $registry:$BUILD_NUMBER"
             }
         }
 
