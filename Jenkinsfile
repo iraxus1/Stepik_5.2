@@ -56,5 +56,13 @@ pipeline {
                     sh "docker image rm $registry:$BUILD_NUMBER"
                  }
         }
+        
+        stage('Remove unused images') {
+            steps {
+                    echo 'Removing unused images'
+                    sh 'docker image prune -f'
+                    echo 'Removed unused images complete'
+                 }
+        }
     }
 }
