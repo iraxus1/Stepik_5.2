@@ -23,33 +23,36 @@ pipeline {
         }
         stage('Build') {
             agent{
-                        docker {
-                                    image 'maven:3.8.6-amazoncorretto-17'
-                                    args '-w /app'
-                                }
+                  docker {
+                          image 'maven:3.8.6-amazoncorretto-17'
+                          args '-w /app'
                          }
+                  }
             steps {
                 echo 'Building'
                 sh 'mvn clean install'
             }
         }
 
-        stage('Build Docker Image') {
-        agent {
-                docker {
-                    image 'mmiotkug/node-curl'
-                    args '-p 3000:3000'
-                    args '-w /app'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+        stage('Build Docker Image and pus') {
+            agent {
+                    docker {
+                        image 'mmiotkug/node-curl'
+                        args '-p 3000:3000'
+                        args '-w /app'
+                        args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    }
                 }
-            }
             steps {
-                echo 'Building Docker Image'
-                sh 'docker image build -t $registry .'
-                sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
-                sh 'docker image push $registry'
-                sh 'docker image rm $registry'
-            }
+                    echo 'Building Docker Image'
+                    sh 'docker image build -t $registry:$BUILD_NUMBER .'
+                    echo 'Logging into DockerHub'
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u iraxus --password-stdin'
+                    echo 'Pushing Docker Image'
+                    sh 'docker image push $registry:$BUILD_NUMBER'
+                    echo 'Pushed Docker Image'
+                    sh "docker image rm $registry:$BUILD_NUMBER"
+                 }
         }
     }
 }
