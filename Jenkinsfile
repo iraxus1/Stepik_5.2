@@ -3,7 +3,7 @@ pipeline {
           registry = "iraxus/maven-docker-test"
           DOCKERHUB_CREDENTIALS = credentials('docker-login-pwd')
       }
-
+     agent none
     options {
         skipStagesAfterUnstable()
     }
