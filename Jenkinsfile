@@ -9,8 +9,8 @@ pipeline {
             args '-u root:root'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
             args '-w /app'
-
         }
+
     }
     options {
         skipStagesAfterUnstable()
@@ -32,10 +32,10 @@ pipeline {
         stage('Build Docker Image') {
             agent {
                 docker {
-                    image 'mmiotkug/node-curl'
-                    args '-p 3000:3000'
-                    args '-w /app'
+                    image 'docker:20.10.8'
+                    args '-u root:root'
                     args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    args '-w /app'
                 }
             }
             steps {
