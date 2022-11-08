@@ -3,14 +3,7 @@ pipeline {
           registry = "iraxus/maven-docker-test"
           DOCKERHUB_CREDENTIALS = credentials('docker-login-pwd')
       }
-    agent {
-        docker {
-            image 'mmiotkug/node-curl'
-            args '-p 3000:3000'
-            args '-w /app'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+
     options {
         skipStagesAfterUnstable()
     }
@@ -29,6 +22,12 @@ pipeline {
             }
         }
         stage('Build') {
+            agent{
+                        docker {
+                                    image 'maven:3.8.6-amazoncorretto-17'
+                                    args '-w /app'
+                                }
+                         }
             steps {
                 echo 'Building'
                 sh 'mvn clean install'
@@ -36,6 +35,14 @@ pipeline {
         }
 
         stage('Build Docker Image') {
+        agent {
+                docker {
+                    image 'mmiotkug/node-curl'
+                    args '-p 3000:3000'
+                    args '-w /app'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
                 echo 'Building Docker Image'
                 sh 'docker image build -t $registry .'
