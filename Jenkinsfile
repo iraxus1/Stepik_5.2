@@ -9,7 +9,7 @@ pipeline {
     }
     stages {
 
-        stage('Test') {
+        stage('Testing') {
             agent{
             docker {
                         image 'maven:3.8.6-amazoncorretto-17'
@@ -19,9 +19,10 @@ pipeline {
             steps {
                 echo 'Testing'
                 sh 'mvn test'
+                echo 'Testing done'
             }
         }
-        stage('Build') {
+        stage('Mvn clean install') {
             agent{
                   docker {
                           image 'maven:3.8.6-amazoncorretto-17'
@@ -29,12 +30,13 @@ pipeline {
                          }
                   }
             steps {
-                echo 'Building'
+                echo 'Building jar'
                 sh 'mvn clean install'
+                echo 'Building jar done'
             }
         }
 
-        stage('Build Docker Image and pus') {
+        stage('Build Docker Image and Push') {
             agent {
                     docker {
                         image 'mmiotkug/node-curl'
