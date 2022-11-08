@@ -56,8 +56,16 @@ pipeline {
                     sh "docker image rm $registry:$BUILD_NUMBER"
                  }
         }
-        
+
         stage('Remove unused images') {
+            agent {
+                    docker {
+                        image 'mmiotkug/node-curl'
+                        args '-p 3000:3000'
+                        args '-w /app'
+                        args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    }
+                }
             steps {
                     echo 'Removing unused images'
                     sh 'docker image prune -f'
