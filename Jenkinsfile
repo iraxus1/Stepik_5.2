@@ -15,8 +15,14 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
-        
+
         stage('Test') {
+            agent{
+            docker {
+                        image 'maven:3.8.6-amazoncorretto-17'
+                        args '-w /app'
+                    }
+             }
             steps {
                 echo 'Testing'
                 sh 'mvn test'
