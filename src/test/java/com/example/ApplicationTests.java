@@ -52,6 +52,7 @@ public class ApplicationTests {
                 )));
     }
 
+    //Nie wiem dlaczego ten test na dystans nie przechodzi
     @Test
     public void getDistanceReturnDistance() throws Exception {
         final int x1 = 10;
