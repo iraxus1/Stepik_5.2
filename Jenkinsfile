@@ -10,7 +10,10 @@ pipeline {
             args '-w /app'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
-
+        docker{
+            image 'maven:3.8.6-amazoncorretto-17'
+            args '-w /app'
+        }
     }
     options {
         skipStagesAfterUnstable()
