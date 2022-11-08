@@ -27,14 +27,15 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage("Build & Push Docker image") {
+
+        stage('Build Docker Image') {
             steps {
-                sh 'docker image build -t $registry:$BUILD_NUMBER . -f Dockerfile'
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u iraxus --password-stdin'
-                sh 'docker image push $registry:$BUILD_NUMBER'
-                sh "docker image rm $registry:$BUILD_NUMBER"
+                echo 'Building Docker Image'
+                sh 'docker image build -t $registry .'
+                sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
+                sh 'docker image push $registry'
+                sh 'docker image rm $registry'
             }
         }
-
     }
 }
